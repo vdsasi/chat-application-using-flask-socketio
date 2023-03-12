@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="message-box">
+    <h2>Chat room: {{room}}</h2>
+    <div class="messages" id  = "messages">
+
+    </div>
+    <div class="inputs">
+        <input type="text" rows ="3" placeholder="enter message" id = "message">
+        <button type="button" name="send" id="send-btn" onClick="sendMessage()">Send</button>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+<script>
+    var socketio = io("http://localhost:5000");
+
+    function sendMessage() {
+        var ele = document.getElementById('message');
+        socketio.emit('addmessage', {'message': ele.value});
+        ele.value = '';
+    }
+
+    socketio.on('messages', (data) => {
+        console.log(data);
+        const mydiv = document.getElementById('messages');
+
+        const p = document.createElement('p');
+        p.innerHTML = data.message + "<br>"
+        mydiv.appendChild(p);
+    })
+
+    
+
+</script>
+{% endblock %}
